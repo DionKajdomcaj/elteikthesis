@@ -29,6 +29,10 @@
 \RequirePackage{xparse}
 \RequirePackage{ifthen}
 
+\usepackage{pdfpages}
+\usepackage{url}
+\usepackage{tikzsymbols}
+
 % ------------------------------
 % Processing parameters
 \newtoggle{oneside}\toggletrue{oneside}
