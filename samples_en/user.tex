@@ -26,7 +26,7 @@ a stable internet connection and a Mastodon account.
 \section{Installation guide}
 \label{s:installation_guide}
 As earlier mentioned, in order to use Mastodon social media threat alert application
-we need to have a stable internet connection and a Mastodon account in any server and Python 3.10.2.
+we need to have a stable internet connection and a Mastodon account in any server and \textit{Python} 3.10.2.
 \newline
 The application is currently supporting Windows and Linux but the goal is to extend it as a 
 mobile application which supports IOS and Android. Hence, the installation steps are the same for
@@ -35,15 +35,23 @@ both, Windows and Linux, but we will go through the steps in Windows specificall
 To download the application we need to clone the following repository: 
 \url{https://github.com/DionKajdomcaj/Mastodon-Social-Threat-Alert.git}.
 \newline
-Prior to cloning the repository we need to make sure that we have git and then use
-the following command in the command prompt to clone the repository:
+Prior to cloning the repository we need to make sure that we have git.
+If git is missing, the user can dowload it at the
+following url: \url{https://git-scm.com/download/win}
+If the git prerequisite is met, we can clone the repositery by
+entering the following command in the command prompt:
 \begin{lstlisting}[caption=Cloning Repository, captionpos=b]
 	C:\Users\dionk>git clone https://github.com/DionKajdomcaj/Mastodon-Social-Threat-Alert.git
 \end{lstlisting}
 After succeeding to clone the repository we need to install the requirements for
-our environment. In the repository there is a file called requirements and installing it
-will fulfill the requirements to run the application. We can install them by
-using the following command in command prompt:
+our environment. In order to install the requirements we need to make sure we have
+pip command. If the pip command is not installed, the user can install it by clicking
+the following url: \url{https://phoenixnap.com/kb/install-pip-windows}.
+\newline
+In the application folder there is a file called requirements, installing it
+will fulfill all the requirements to run the application.
+\newline
+We can install them by using the following command in command prompt:
 \begin{lstlisting}[caption=Installing requirements, captionpos=b]
 	C:\Users\dionk\Mastodon-Social-Threat-Alert>pip install -r requirements.txt
 \end{lstlisting}
@@ -68,9 +76,9 @@ our application log in page.
 
 \section{Logging in}
 \label{s:Logging_in}
-As we saw in Figure 2.1 the button to actually start the application is disabled.
-In order to enable it we must fulfill the requirements which are: filling the username
-, password and server field. If only one of them is missing then the user will not be able
+As we saw in Figure \ref{fig:empty_page} the button to actually start the application is disabled.
+In order to enable it we must fulfill the requirements which are: filling the username,
+password and server field. If only one of them is missing then the user will not be able
 to start the application nor use it. 
 \begin{figure}[H]
 	\centering
@@ -151,29 +159,114 @@ it's domain, and click the button in order to perform the actions.
 Now we can choose independently the type of action for both, the account
 and it's domain.
 \newline
-After clicking the button the actions will take place
-and the application will go to it's running state again.
 \begin{figure}[H]
 	\centering
- 	\includegraphics[width=0.3\textwidth,height=240px]{images/actiontypes.png}
-	\caption{Choosing the type of action}
-	\label{fig:choosing_action}
+	\subcaptionbox{Account Actions}{
+		\includegraphics[width=0.45\linewidth, height=240px]{images/accountaction.png}}
+	\hspace{5pt}
+	\subcaptionbox{Domain Actions}{
+		\includegraphics[width=0.45\linewidth, height=240px]{images/domainaction.png}}
+	\caption{Actions available for account and domain}
+	\label{fig:action_both}
 \end{figure}
+When we click the button, a pop up window will show up, letting
+you know that the actions were successful.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.3\textwidth,height=240px]{images/successaction.png}
+	\caption{Pop up window to confirm the actions}
+	\label{fig:pop_up_action}
+\end{figure}
+After closing the pop up window, the application will go back to
+it's running state as in Figure \ref{fig:running_app}.
 
 \subsection{Account action}
-\label{ss:acc_action}
-As it was mentioned before that we can choose the actions separately for the possible threat account and it's
-domain. In both cases we have Trust and Block as actions, but they behave differently
-as account action and as domain action.
+As it was mentioned before, we can choose the actions separately for the possible threat account and it's
+domain. In this section we are going to talk about the possible threat account's action.
 \newline
-In case of the account the Trust action just trusts the account and does not check it
-again if it tries to reach you. However, the Block action blocks the account completely,
-and that account will not be able to reach you in any form.
+We have 3 types of actions for the account, which are: Trust, Block, Mute.
+The following table will describe each action.
+\begin{center}
+	\begin{longtable}{ | p{0.3\textwidth} | p{0.7\textwidth} | }
+		
+		\hline
+		\multicolumn{2}{|c|}{\textbf{Account Actions}}
+		\\ \hline
+		
+
+		\hline
+		\endfirsthead % table header on first page
+		
+		\hline
+		\hline
+		\endhead % table header on further pages
+		
+		\hline
+		\endfoot % table footer on previous pages
+		
+		\endlastfoot % table footer on last page
+		
+		\emph{Trust}
+		& This action is very simple in context. When the user takes this function it means
+		that he is trusting the possible threat account, and the application will not check the same account again, if it is trying to reach the user again.
+		\\ \hline
+		
+		\emph{Block}
+		& This action blocks the possible threat account, meaning it does not let the account reach the user anymore, not only by direct messaging or tagging, but even following, liking or any other social media activity. Besides those things the user will not see any activity from the possible threat account. To sum it up, the possible threat account will be non existent for the user.
+		\\ \hline
+		
+		\emph{Mute}
+		& Muting an account is same as ignoring the account, since the user will not receive notifications from the possible threat account anytime it tries to reach the user, but the user will still be able to check it's activity and the possible threat account will be able to try and reach the user, but simply the user will not be notified.
+		\\ \hline
+		
+		\caption{Description of every action that can be taken against an account}
+		\label{tab:account_ac_d}		
+	\end{longtable}
+\end{center}
+
+However, every action that has been taken against the possible threat account can be easily reverted in Mastodon.
 \subsection{Domain action}
-\label{ss:dmn_action}
-In case of the account's domain the trust action works the same as in the account action.
-However, in case of the Block action the domain is going to be blocked and the user will not
-receive any notifications from accounts that have the blocked domain.
+In case of the possible threat account's domain we have less actions that can be taken against it. 
+\newline
+The actions are Trust and Block. They might seem the same as the account actions described in table \ref{tab:account_ac_d}, but blocking a domain is completely different, since here we are working with the whole domain. However, in case of Trust, the functionality is the same as it was in the possible threat account's action.
+\newline
+In the following table you can understand their functionality.
+\begin{center}
+	\begin{longtable}{ | p{0.3\textwidth} | p{0.7\textwidth} | }
+		
+		\hline
+		\multicolumn{2}{|c|}{\textbf{Domain Actions}}
+		\\ \hline
+		
+		
+		\hline
+		\endfirsthead % table header on first page
+		
+		\hline
+		\hline
+		\endhead % table header on further pages
+		
+		\hline
+		\endfoot % table footer on previous pages
+		
+		\endlastfoot % table footer on last page
+		
+		\emph{Trust}
+		& This action works the same way as it works to trust an account. However, trusting the domain will not take any actual action against the domain. So, simply the accounts that are from that domain can freely reach the user in any form and without any restrictions.
+		\\ \hline
+		
+		\emph{Block}
+		& In case of Block the whole domain is blocked, meaning that any account that belongs in that domain can't reach the user. But, the user should always be very careful and is recommended not to block domains unless he/she was disturbed many times by the accounts coming from the same domain.
+		\\ \hline
+
+		\caption{Description of every action that can be taken against a domain}
+		\label{tab:account_do_d}		
+	\end{longtable}
+\end{center}
+Same as in the account actions, the domain actions can be reverted in Mastodon.
+\section{Exiting the application}
+As we can see in figure \ref{fig:running_app}, we can exit the application in two ways, by clicking the button named \textit{Exit the application} or by simply closing the window. It is recommended to exit the application by clicking the button because it is terminated safely, but sometimes when we want to exit it while we are not on the running page, we can exit the application by closing the window as well. However, it is not recommended to close the application while taking actions, like in figure \ref{fig:action_page}, because the possible threat account's will not be saved in the database.
+
 
 
 
