@@ -6,117 +6,191 @@ the solutions to certain problems encountered during implementation and how ever
 \\[5pt]
 In order to build and run the application as a developer, you must follow the same steps as in \ref{s:installation_guide}.
 \\[5pt]
-As it was mentioned before the application is completely connected to Mastodon, since it is useless and makes no sense without it.
+As it was mentioned before the application is completely connected to Mastodon \cite{test}. So, it is useless and
+not the correct way to use it without using Mastodon.
 
 
 
 
-\section{-like environments}
-
-\begin{definition}
-Mauris tristique sollicitudin ultrices. Etiam tristique quam sit amet metus dictum imperdiet. Nunc id lorem sed nisl pulvinar aliquet vitae quis arcu. Morbi iaculis eleifend porttitor.
-\end{definition}
-
-Maecenas rutrum eros sem, pharetra interdum nulla porttitor sit amet. In vitae viverra ante. Maecenas sit amet placerat orci, sed tincidunt velit. Vivamus mattis, enim vel suscipit elementum, quam odio venenatis elit, et mollis nulla nunc a risus. Praesent purus magna, tristique sed lacus sit amet, convallis malesuada magna. Phasellus faucibus varius purus, nec tristique enim porta vitae.
-
-\begin{theorem}
-Nulla finibus ante vel arcu tincidunt, ut consectetur ligula finibus. Mauris mollis lectus sed ipsum bibendum, ac ultrices erat dictum. Suspendisse faucibus euismod lacinia. Etiam vel odio ante.
-\end{theorem}
-\begin{proof}
-Etiam pulvinar nibh quis massa auctor congue. Pellentesque quis odio vitae sapien molestie vestibulum sit amet et quam. Pellentesque vel dui eget enim hendrerit finibus at sit amet libero. Quisque sollicitudin ultrices enim, nec porta magna imperdiet vitae. Cras condimentum nunc dui.
-\end{proof}
-
-Donec dapibus sodales ante, at scelerisque nunc laoreet sit amet. Mauris porttitor tincidunt neque, vel ullamcorper neque pulvinar et. Integer eu lorem euismod, faucibus lectus sed, accumsan felis. 
-
-\begin{remark}
-Nunc ornare mi at augue vulputate, eu venenatis magna mollis. Nunc sed posuere dui, et varius nulla. Sed mollis nibh augue, eget scelerisque eros ornare nec. Praesent porta, metus eget eleifend consequat, eros ligula eleifend ex, a pellentesque mi est vitae urna. Vivamus turpis nunc, iaculis non leo eget, mattis vulputate tellus.
-\end{remark}
-
-Fusce in aliquet neque, in pretium sem. Donec tincidunt tellus id lectus pretium fringilla. Nunc faucibus, erat pretium tempus tempor, tortor mi fringilla neque, ac congue ex dui vitae mauris. Donec pretium et quam a cursus.
-
-\begin{note}
-Aliquam vehicula luctus mi a pretium. Nulla quam neque, maximus nec velit in, aliquam mollis tortor. Aliquam erat volutpat. Curabitur vitae laoreet turpis. Integer id diam ligula.
-\end{note}
-
-Ut sollicitudin tempus urna et mollis. Aliquam et aliquam turpis, sed fermentum mauris. Nulla eget ex diam. Donec eget tellus pharetra, semper neque eget, rutrum diam.
-
-\subsection{Equations, formulas}
-
-Duis suscipit ipsum nec urna blandit, $2 + 2 = 4$ pellentesque vehicula quam fringilla. Vivamus euismod, lectus sit amet euismod viverra, dolor metus consequat sapien, ut hendrerit nisl nulla id nisi. Nam in leo eu quam sollicitudin semper a quis velit.
-
-$$a^2 + b^2 = c^2$$
-
-Phasellus mollis, elit sed convallis feugiat, dolor quam dapibus nibh, suscipit consectetur lacus risus quis sem. Vivamus scelerisque porta odio, vitae euismod dolor accumsan ut.
-
-In mathematica, identitatem Euleri (equation est scriptor vti etiam notum) sit aequalitatem Equation~\ref{eq:euler}:
-\begin{equation}\label{eq:euler}
-e^{i \times \pi} + 1 = 0
-\end{equation}
-
-
-\section{Source code samples}
-
-Nulla sodales purus id mi consequat, eu venenatis odio pharetra. Cras a arcu quam. Suspendisse augue risus, pulvinar a turpis et, commodo aliquet turpis. Nulla aliquam scelerisque mi eget pharetra. Mauris sed posuere elit, ac lobortis metus. Proin lacinia sit amet diam sed auctor. Nam viverra orci id sapien sollicitudin, a aliquam lacus suscipit. Quisque ac tincidunt leo Code~\ref{src:cpp} and \ref{src:csharp}:
-
-\lstset{caption={Hello World in C++}, label=src:cpp}
-\begin{lstlisting}[language={C++}]
-#include <stdio>
-
-int main() 
-{
-	int c;
-	std::cout << "Hello World!" << std::endl;
-
-	std::cout << "Press any key to exit." << std::endl;
-	std::cin >> c;
+\section{Mastodon API}\label{s:api}
+As it was mentioned in \ref{s:project_desc}, this application check whether an account
+that is trying to reach you is a possible threat or not. To do this checking we need the data
+of the account. So, we have to connect to a API that get the data from
+the live Mastodon server in order to check the possibility of a threat account.
+Other than that, the API is used to let us take the actions mentioned in \ref{s:Actions_threat}
+directly from our application, without the need of doing it through Mastodon.
+For this application we used an already created API for Python called
+\textit{Mastodon API}  \cite{apimast}.
+\\[5pt]
+Below we can see a scheme of how our this API operates.
+\\[5pt]
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth,height=200px]{images/MastodonApi.png}
+	\caption{Mastodon API scheme}
+	\label{fig:mast_api}
+\end{figure}
+\subsection{API rate limits}\label{ss:rate_lim}
+This API has a fixed rate-limit that is 300 requests per 5 minutes, in order not to
+violate the rate-limit and make the user wait for 5 minutes until the rate-limit resets, we
+needed to get data from the live server every 2.4 second so the user can get the full
+experience of Mastodon. This being said, user has enough time to surf the feed without having
+to wait for 5 minutes.
+\subsection{API initialization}\label{ss:api_init}
+To use this API we need to use the user's credentials to log into Mastodon account through API, and those credentials will be saved in \textit{.secret} files in the directory where we call the API, and that is the reason why the user must give the credentials in the starting of the application. Below is a the snippet for logging in to the Mastodon account through API.
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Logging in to Mastodon account through API}, captionpos=b ]
+	def __init__(self):
+		self._user = Mastodon()
+		self._userApiInstance = Mastodon()
+		self._mastodonServer = ""
 	
-	return 0;
-}
+	def createApp(self, mastodon_server):
+		if(mastodon_server.split("://")[0] != "https"):
+			self._mastodonServer = "https://" + mastodon_server
+		else:
+			self._mastodonServer = mastodon_server
+	
+	Mastodon.create_app(
+		"mastodonApiAppUser",
+		api_base_url=self._mastodonServer,
+		to_file='app/secretFolder/mastodonApiAppUser.secret'
+	)
+	
+	def setUpAccounts(self):
+		self._user = Mastodon(
+			client_id='app/secretFolder/mastodonApiAppUser.secret',
+			api_base_url=self._mastodonServer
+		)
+	
+	def loginAccount(self, username, password, user=True):
+		if user:
+			self._user.log_in(
+				username,
+				password,
+				to_file='app/secretFolder/usercredentials.secret' 
+			)
+\end{lstlisting}
+\subsection{API instance}\label{ss:api_instance}
+Logging in to the account is not enough in order to use this API, but we can say it is a very important step and a must. To actually start using the API we need to create an API instance for that account. Below you can see the snippet of creating the API instance for both user account or admin account.
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Creating API instance}, captionpos=b]
+	def createApiInstance(self):
+		self._userApiInstance = Mastodon(
+				access_token='app/secretFolder/usercredentials.secret',
+				api_base_url=self._mastodonServer
+		)
+\end{lstlisting}
+So, we have to create a access token from our the user credentials saved in \textit{.secret} file, and after creating the API instance we can start using the API methods. The main methods that this application uses are:
+\begin{itemize}
+	\item \textbf{Get the notifications}
+	\item \textbf{Clear the notifications}
+	\item \textbf{Block an account}
+	\item \textbf{Block a domain}
+	\item \textbf{Get certain account's data}
+	\item \textbf{Get user's following accounts}
+	\item \textbf{Mute an account}
+\end{itemize}
+We will deep dive into each of the methods in the following sections.
+\subsection{Notifications}\label{ss:notif}
+To get the accounts that are trying to reach the user, we first need to get the notifications and filter them to only get the direct messages and tags, which is done
+by setting the parameter named \textbf{mentions} to true.
+To get the notifications through the API we can use the following method:
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Getting the notifications by API}, captionpos=b]
+	def getNotifications(self):
+		return self._userApiInstance.notifications(mentions_only=True)
+\end{lstlisting}
+And in order to filter them we need to go through each and filter them by their type and existence in the applications database.
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Filtering the notifications}, captionpos=b]
+	def startSession(self):
+		try:
+			notifications = self.api.getNotifications()
+			accounts_reaching_user = []
+			for notification in notifications:
+				account_id = notification['account']['id']
+				
+				inDatabase = self.isAccountInDatabase(int(account_id))
+		
+				if (account_id not in accounts_reaching_user and not inDatabase):
+					accounts_reaching_user.append(account_id)
+	
+			return accounts_reaching_user
+		except Exception:
+			return []
+\end{lstlisting}
+\subsection{Getting account's data}\label{ss:acc_data}
+As it was mentioned in \ref{s:api} we need to get the account's data in order to check for the possibility of the threat. To get the data of a certain account, we need that account's id and we can get public data for that account such as:
+\begin{itemize}
+	\item \textbf{Account ID}
+	\item \textbf{Username}
+	\item \textbf{Domain}
+	\item \textbf{Followers Count}
+	\item \textbf{Followings Count}
+	\item \textbf{Statuses count}
+	\item \textbf{Avatar}
+	\item \textbf{Header}
+	\item \textbf{Date of creation}
+\end{itemize}
+And in order to fetch those data we can simply call the API method which is as below:
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Fetching certain account's public data}, captionpos=b]
+	getAccountData(self, account_id, admin=False):
+		if not admin:
+			return self._userApiInstance.account(account_id)
+\end{lstlisting}
+This method will return the data as a dictionary where the keys are the public data names and the values are their values.
+\subsection{Getting user's following accounts}
+We know that if we follow someone that means we most probably know him. Hence, we need to trust the accounts we follow when we start our application. To trust them we need to get the list of the accounts which is done by the following method:
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Method to get the list of the accounts we follow}, captionpos=b]
+	def getFollowingAccounts(self):
+		my_id = self._userApiInstance.me()['id']
+		return self._userApiInstance.account_following(my_id)
+\end{lstlisting}
+As we can see, we first need to get our account id and then get the list of the accounts we follow. After having the list of the accounts we follow, we need to trust by inserting each in the application's database so we don't have to check them if they try to reach us.
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Inserting the accounts we follow immediately in the application database}, captionpos=b]
+	def trustFollowings(self):
+		following_accounts = self.api.getFollowingAccounts()   
+		for account_data in following_accounts:
+			try:
+				account_id = int(account_data['id'])
+				username = str(account_data['username'])
+				domain = str(account_data['url'].split('/')[2])
+				self.__database.insertAccount(account_id, username, domain, False)
+				self.__database.insertDomain(domain, False)
+			except Exception:
+				print("Error")
+\end{lstlisting}
+\subsection{Blocking an account}
+As it was mentioned in \ref{ss:act_action} we have the option to block an account and of course the only way to do it outside the application is by using the API. So, in order to block an account we need to call the API method and pass the account's id as a parameter
+and the account with that id will be blocked.
+\begin{lstlisting}[language=python, caption={Blocking an account method}, captionpos=b]
+	def blockAccount(self, account_id):
+		self._userApiInstance.account_block(account_id)
+		print("done")
+		return True
+\end{lstlisting}
+\subsection{Muting an account}
+Same as blocking an account, when we want to mute a certain account we need to call the API method and pass the account's id as a parameter.
+\begin{lstlisting}[language=python, caption={Muting an account method}, captionpos=b]
+	def muteAccount(self, account_id):
+		self._userApiInstance.account_mute(account_id)
+		return True
+\end{lstlisting}
+\subsection{Blocking a domain}
+When it comes to blocking a domain the parameter changes, since the domains are not classified with ids. If we want to block a domain we need to pass the domain's name as a parameter, but keep in mind that the domain is case-sensitive.
+\begin{lstlisting}[language=python, caption={Blockin a domain method}, captionpos=b]
+	def blockDomain(self, domain):
+		self._userApiInstance.domain_block(domain)
+		return True
 \end{lstlisting}
 
-\lstset{caption={Hello World in C\#}, label=src:csharp}
-\begin{lstlisting}[language={[Sharp]C}]
-using System;
-namespace HelloWorld
-{
-	class Hello 
-	{
-		static void Main() 
-		{
-			Console.WriteLine("Hello World!");
-			
-			Console.WriteLine("Press any key to exit.");
-			Console.ReadKey();
-		}
-	}
-}
-\end{lstlisting}
+\section{Predictive Model}
+\section{Database}
+\section{GUI}
+\section{Testing}
 
-\subsection{Algorithms}
 
-A general Interval Branch and Bound algorithm is shown in Algorithm~\ref{alg:ibb}. An appropriate selection rule is applied in Step~\ref{step:selrule}.\\
-Source of example: \href{https://www.inf.u-szeged.hu/actacybernetica/}{Acta Cybernetica (this is a hyperlink)}.
-
-\begin{algorithm}[H]
-\caption{A general interval B\&B algorithm} 
-\label{alg:ibb} 
-\textbf{\underline{Funct}} IBB($S,f$)
-\begin{algorithmic}[1] % display line numbers before every n line, here n = 1
-\State Set the working list ${\cal L}_W$ := $\{S\}$ and the final list ${\cal L}_Q$ := $\{\}$     
-\While{( ${\cal L}_W \neq \emptyset$ )} \label{alg:igoend}
-	\State  Select an interval $X$ from ${\cal L}_W$ \label{step:selrule}\Comment{Selection rule}  
-	\State Compute $lbf(X)$ \Comment{Bounding rule}		  
-	\If{$X$ cannot be eliminated} \Comment{Elimination rule}
-		\State Divide $X$ into $X^j,\ j=1,\dots, p$, subintervals   \Comment{Division rule}
-		\For{$j=1,\ldots,p$}
-			\If{$X^j$ satisfies the termination criterion} \Comment{Termination rule}
-				\State Store $X^j$ in ${\cal L}_W$ 
-			\Else
-				\State Store $X^j$ in ${\cal L}_W$ 
-			\EndIf
-		\EndFor  
-	\EndIf
-\EndWhile
-\State \textbf{return} ${\cal L}_Q$
-\end{algorithmic}
-\end{algorithm}
