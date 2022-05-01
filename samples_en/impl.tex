@@ -188,8 +188,147 @@ When it comes to blocking a domain the parameter changes, since the domains are 
 		return True
 \end{lstlisting}
 
-\section{Predictive Model}
+\section{Predictive Model}\label{s:model}
+Classifying the possibility of a threat is done by a machine learning predictive model.
+To create our model we used the \textit{Scikit-learn} \cite{scikit-learn} python library, to
+preprocess the data we used \textit{Pandas} \cite{pandas} python library and in order to save the
+model so it doesn't need to go through the training process again we used \textit{Pickle} \cite{pickle}
+\\[5pt]
+Since our problem was to classify whether an account has a possibility of being a threat,
+we had to choose between the classification algorithms. Considering multiple factors and trying
+multiple algorithms we chose to go with Logistic regression for these reasons:
+\begin{itemize}
+	\item \textbf{Small dataset}, Logistic regression is known to give the best results in small datasets.
+	\item \textbf{Low complexity model}, since we had to classify between two classes and we had 19 features to consider,
+	we needed to use a low complexity model.
+\end{itemize}
+\subsection{Data preprocessing}
+As it was mentioned above we had to deal with data preprocessing in order to make our dataset suitable
+to train the model. We needed to read the data from a csv file and create a dataset based on the data
+that was available on that file. The file contained accounts with account's data and it has already classified all of them as threat
+and not threat. However, we didn't get all the account's data since some of them were not related to our problem, such as username, account id etc.
+It is worth mentioning that we considered the following account's data only:
+\begin{itemize}
+	\item \textbf{Followers count}, the number of the accounts that follow the account.
+	\item \textbf{Followings count}, the number of the accounts that the account follows.
+	\item \textbf{Statuses count}, the number of the statuses the account has posted.
+	\item \textbf{Profile picture}, whether the account has a profile picture.
+	\item \textbf{Domain}, account's Mastodon domain.
+	\item \textbf{Year of creation}, the year when the account was created.
+\end{itemize}
+As we can see we had some of the data in string format, like year of creating and domain, so we
+had to use the dummy encoder from Pandas and that limited our range of domains and year of creation.
+So, now the model recognized only the following domains:
+\begin{itemize}
+	\item \textbf{mastodon.elte.hu}
+	\item \textbf{mastodon.social}
+	\item \textbf{mastodon.technology}
+	\item \textbf{mastodon.xyz}
+	\item \textbf{scholar.social}
+	\item \textbf{fosstodon.org}
+	\item \textbf{hofelho.hu}
+\end{itemize}
+About the year range, we thought that it was more than enough to consider accounts created from 2015, since
+the older the account, the less the possibility of being a threat is.
+So, after applying the dummy encoder our features increased from 6 to 19.
+\\[5pt]
+Since some of our data could get big values, like the followers count and following count, we needed
+to apply normalization on data, so that we could get more accurate predictions in the end.
+After normalization we split the dataset into training set and testing set, where 70 percent of the data was on the
+training set and the other 30 percent of the data was on the testing set.
+\subsection{Model performance}
+We mentioned in \ref{s:model} that we needed a low complexity algorithm, and we know that we have three different kinds
+provided by Scikit-learn which are:
+\begin{itemize}
+	\item \textbf{Logistic regression}
+	\item \textbf{SVC}
+	\item \textbf{Naive Bayes}
+\end{itemize}
+After trying each of the algorithms, we wanted to go with Logistic regression since the performance, confusion matrix
+and the ROC curve was showing us that Logistic regression is performing better in comparison to the two others.
+\\[5pt]
+\begin{figure}[H]
+	\centering
+	\subcaptionbox{Naive Bayes performance scores}{
+		\includegraphics[width=0.45\textwidth, height=130px]{images/naivebayesperf.png}}
+	\hspace{5pt}
+	\subcaptionbox{Naive Bayes confusion matrix}{
+		\includegraphics[width=0.45\textwidth, height=130px]{images/naivebayesconfmat.png}}
+	\hspace{5pt}
+	\subcaptionbox{Naive Bayes ROC curve}{
+		\includegraphics[width=0.45\textwidth, height=130px]{images/naivebayesauc.png}}
+	\caption{Naive Bayes overall performance}
+	\label{fig:naive_bayes_perf}
+\end{figure}
+For the Naive Bayes algorithm we can see that the mean absolute error is quite high, the
+difference between the training set accuracy and testing test accuracy is more than 10 percent, the f1-score
+is quite low and the ROC curve isn't the best.
+\\[5pt]
+\begin{figure}[H]
+	\centering
+	\subcaptionbox{SVC performance scores}{
+		\includegraphics[width=0.45\textwidth, height=130px]{images/svmperf.png}}
+	\hspace{5pt}
+	\subcaptionbox{SVC confusion matrix}{
+		\includegraphics[width=0.45\textwidth, height=130px]{images/svmconfmat.png}}
+	\hspace{5pt}
+	\subcaptionbox{SVC ROC curve}{
+		\includegraphics[width=0.45\textwidth, height=130px]{images/svmauc.png}}
+	\caption{SVC overall performance}
+	\label{fig:svc_perf}
+\end{figure}
+Now for the SVC algorithm we can see perfect scores in case of precision, which is impossible to be 1.0
+, meaning that we might have the overfitting problem. But, other than precision the other scores show us a promising
+model until we watch the confusion matrix and the ROC curve. We can see that the confusion matrix is giving us more false predicted
+values than it should have meaning that most of the predictions the model made were false predictions. Not only confusion matrix is
+giving us a red light for this model, but even the AUC value which is showing us an awful result, where most of the points are below the
+middle point.
+\\[5pt]
+\begin{figure}[H]
+	\centering
+	\subcaptionbox{Logistic regression performance scores}{
+		\includegraphics[width=0.45\textwidth, height=130px]{images/scores_model.png}}
+	\hspace{5pt}
+	\subcaptionbox{Logistic regression confusion matrix}{
+		\includegraphics[width=0.45\textwidth, height=130px]{images/confusion_matrix.png}}
+	\hspace{5pt}
+	\subcaptionbox{Logistic regression ROC curve}{
+		\includegraphics[width=0.45\textwidth, height=130px]{images/Roc_curve_model.png}}
+	\caption{Logistic regression overall performance}
+	\label{fig:lgs_perf}
+\end{figure}
+However, if we take a look at the Logistic regression algorithm performance then we can see
+a good accuracy on both, training set and testing set, with a difference of 1.1 percent.
+Besides the accuracy we see a good recall and precision score, which makes a good f1 score.
+The confusion matrix tells us that the most of the values predicted are true, and the ROC curve
+shows us a very good AUC score of 0.93.
 \section{Database}
+We used database in our application in order to save the already checked users and domains. For the database
+we chose to use the \textit{SQLite} \cite{sqlite} with it's API python library called \textit{sqlite3} \cite{sqllite3}.
+\\[5pt]
+We created two tables, one for the handled accounts and one for the handled domains. They are both initialized at the same time
+and they are not connected with each other, meaning that they behave independently.
+\\[5pt]
+As a first step of initializing the database is to connect to it, create the tables and after we are done we need to commit the data.
+\subsection{Handled accounts table}\label{ss:hand_acc}
+The handled accounts table consists of these data:
+\begin{itemize}
+	\item \textbf{Account id}, as a primary key.
+	\item \textbf{Account username}
+	\item \textbf{Account domain}
+	\item \textbf{Threat boolean}
+\end{itemize}
+So, whenever an account is getting checked for the threat possibility, it will immediately go in the database
+after the threat possibility result is given, and that account doesn't need to be checked twice since its in the database
+of the handled accounts already.
+\subsection{Handled domains table}
+The handled domain table consists of these data:
+\begin{itemize}
+	\item \textbf{Domain name}, as a primary key.
+	\item \textbf{Threat boolean}
+\end{itemize}
+Same as in \ref{ss:hand_acc}, we will insert the domain into the handled domain table immediately after
+receiving the threat possibility result.
 \section{GUI}
 \section{Testing}
 
