@@ -6,7 +6,7 @@ the solutions to certain problems encountered during implementation and how ever
 \\[5pt]
 In order to build and run the application as a developer, you must follow the same steps as in \ref{s:installation_guide}.
 \\[5pt]
-As it was mentioned before the application is completely connected to Mastodon \cite{test}. So, it is useless and
+As it was mentioned before the application is completely connected to \textbf{Mastodon} \cite{test}. So, it is useless and
 not the correct way to use it without using Mastodon.
 
 
@@ -20,7 +20,7 @@ the live Mastodon server in order to check the possibility of a threat account.
 Other than that, the API is used to let us take the actions mentioned in \ref{s:Actions_threat}
 directly from our application, without the need of doing it through Mastodon.
 For this application we used an already created API for Python called
-\textit{Mastodon API}  \cite{apimast}.
+\textbf{Mastodon API}  \cite{apimast}.
 \\[5pt]
 Below we can see a scheme of how our this API operates.
 \\[5pt]
@@ -167,6 +167,7 @@ As we can see, we first need to get our account id and then get the list of the 
 \subsection{Blocking an account}
 As it was mentioned in \ref{ss:act_action} we have the option to block an account and of course the only way to do it outside the application is by using the API. So, in order to block an account we need to call the API method and pass the account's id as a parameter
 and the account with that id will be blocked.
+\\[5pt]
 \begin{lstlisting}[language=python, caption={Blocking an account method}, captionpos=b]
 	def blockAccount(self, account_id):
 		self._userApiInstance.account_block(account_id)
@@ -175,6 +176,7 @@ and the account with that id will be blocked.
 \end{lstlisting}
 \subsection{Muting an account}
 Same as blocking an account, when we want to mute a certain account we need to call the API method and pass the account's id as a parameter.
+\\[5pt]
 \begin{lstlisting}[language=python, caption={Muting an account method}, captionpos=b]
 	def muteAccount(self, account_id):
 		self._userApiInstance.account_mute(account_id)
@@ -182,6 +184,7 @@ Same as blocking an account, when we want to mute a certain account we need to c
 \end{lstlisting}
 \subsection{Blocking a domain}
 When it comes to blocking a domain the parameter changes, since the domains are not classified with ids. If we want to block a domain we need to pass the domain's name as a parameter, but keep in mind that the domain is case-sensitive.
+\\[5pt]
 \begin{lstlisting}[language=python, caption={Blockin a domain method}, captionpos=b]
 	def blockDomain(self, domain):
 		self._userApiInstance.domain_block(domain)
@@ -190,9 +193,9 @@ When it comes to blocking a domain the parameter changes, since the domains are 
 
 \section{Predictive Model}\label{s:model}
 Classifying the possibility of a threat is done by a machine learning predictive model.
-To create our model we used the \textit{Scikit-learn} \cite{scikit-learn} python library, to
-preprocess the data we used \textit{Pandas} \cite{pandas} python library and in order to save the
-model so it doesn't need to go through the training process again we used \textit{Pickle} \cite{pickle}
+To create our model we used the \textbf{Scikit-learn} \cite{scikit-learn} python library, to
+preprocess the data we used \textbf{Pandas} \cite{pandas} python library and in order to save the
+model so it doesn't need to go through the training process again we used \textbf{Pickle} \cite{pickle}
 \\[5pt]
 Since our problem was to classify whether an account has a possibility of being a threat,
 we had to choose between the classification algorithms. Considering multiple factors and trying
@@ -236,6 +239,16 @@ Since some of our data could get big values, like the followers count and follow
 to apply normalization on data, so that we could get more accurate predictions in the end.
 After normalization we split the dataset into training set and testing set, where 70 percent of the data was on the
 training set and the other 30 percent of the data was on the testing set.
+\subsection{Exploratory data analysis - EDA}
+During our EDA we found out that we have some outliars in our dataset, but the number was quite low, somewhere from 4 to 7
+in total. Hence, we didn't remove the outliars since the number was very low and it doesn't affect the training dataset.
+\\[5pt]
+Besides outliars, we didn't have any null value in the fields we used to train, which made our EDA process less complex
+since we didn't have to deal with null values.
+\\[5pt]
+One important thing that is worth mentioning is that we discovered a pattern that showed us that if an account has
+way more followings than followers, doesn't have a profile picture or the followings number is very low(0 to 4), the
+chances for that account to be a possible threat were higher.
 \subsection{Model performance}
 We mentioned in \ref{s:model} that we needed a low complexity algorithm, and we know that we have three different kinds
 provided by Scikit-learn which are:
@@ -278,7 +291,7 @@ is quite low and the ROC curve isn't the best.
 	\label{fig:svc_perf}
 \end{figure}
 Now for the SVC algorithm we can see perfect scores in case of precision, which is impossible to be 1.0
-, meaning that we might have the overfitting problem. But, other than precision the other scores show us a promising
+, meaning that we might have an overfitting problem. But, other than precision the other scores show us a promising
 model until we watch the confusion matrix and the ROC curve. We can see that the confusion matrix is giving us more false predicted
 values than it should have meaning that most of the predictions the model made were false predictions. Not only confusion matrix is
 giving us a red light for this model, but even the AUC value which is showing us an awful result, where most of the points are below the
@@ -302,9 +315,45 @@ a good accuracy on both, training set and testing set, with a difference of 1.1 
 Besides the accuracy we see a good recall and precision score, which makes a good f1 score.
 The confusion matrix tells us that the most of the values predicted are true, and the ROC curve
 shows us a very good AUC score of 0.93.
+\subsection{Passing account data to model}
+As it was mentioned in \ref{ss:acc_data}, the function responsible for fetching data returns a dictionary of
+multiple data fields for the account. In order to pass the data we first need to filter them and get the fields
+that are relatable to our model. 
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Function that returns the model decision}, captionpos=b]
+	def modelDecision(self, account_data):
+		dataForModel = {}
+		dataForModel['followers'] = int(account_data['followers_count'])
+		dataForModel['followings'] = int(account_data['following_count'])
+		dataForModel['statuses'] = account_data['statuses_count']
+		dataForModel['profile'] = 1 if 'missing' not in account_data['avatar'].split('/') else 0
+		dataForModel['server'] = account_data['url'].split('/')[2]
+		dataForModel['dateOfCreation'] = int(str(account_data['created_at']).split('-')[0])
+		data = []
+		for index, feature in enumerate(self.features):
+			if index < 4:
+				data.append(dataForModel[feature])
+			elif index > 3 and index < 11:
+				if feature == dataForModel['server']:
+					data.append(1)
+				else:
+					data.append(0)
+			else:
+				if feature == dataForModel['dateOfCreation']:
+					data.append(1)
+				else:
+					data.append(0)
+	
+		model_result = bool(self.model.predict([data])[0])
+		print(model_result)
+		return model_result
+\end{lstlisting}
+The function \textbf{modelDecision} filters the data to the ones that are relatable to our model and
+afterwards uses those data to predict the result, which is type converted from integer to boolean, and then
+returned as a boolean in the end.
 \section{Database}
 We used database in our application in order to save the already checked users and domains. For the database
-we chose to use the \textit{SQLite} \cite{sqlite} with it's API python library called \textit{sqlite3} \cite{sqllite3}.
+we chose to use the \textbf{SQLite} \cite{sqlite} with it's API python library called \textbf{sqlite3} \cite{sqllite3}.
 \\[5pt]
 We created two tables, one for the handled accounts and one for the handled domains. They are both initialized at the same time
 and they are not connected with each other, meaning that they behave independently.
@@ -329,7 +378,220 @@ The handled domain table consists of these data:
 \end{itemize}
 Same as in \ref{ss:hand_acc}, we will insert the domain into the handled domain table immediately after
 receiving the threat possibility result.
-\section{GUI}
+\section{Graphical user interface}
+This application uses a very simple GUI, with the aim that the user cannot do any big mistake during runtime.
+Since, it is planned to run on the background we valued the program safety during the runtime more than the design
+itself.
+\\[5pt]
+The library we used for the GUI is \textbf{Tkinter} \cite{tkinter}, which is provided by python for desktop applications containing many
+useful elements. In order to read the images we used \textbf{Pillow} \cite{pil}.
+\\[5pt]
+Our GUI consists of a front-end and a back-end part, where the front-end is responsible for displaying the state of the action
+executions and the program. Whereas, the back-end is responsible for the whole logic behind predicting whether an account has
+the possibility of the threat or not.
+\\[5pt]
+It is worth mentioning that the whole GUI is not resizable, meaning that there is one permanent size, and this is done for the reason
+that the user needs the GUI to be as small as possible but well visible, because he will run it in the background.
+\\5[pt]
+During the front-end our main problem was updating the window constantly since our application has some loops and the Tkinter
+built-in function \textbf{withdraw} is a loop itself. Even when we wanted to initialize the API and the database, there were a few
+seconds taken while being executed, meaning that we had to schedule the initialization and update the window until the initialization
+is finished. 
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Updating window while initializing the API and database}, captionpos=b]
+	def initAppReq(self):
+		try:
+			self.app = Application(self.username, self.password, self.server)
+			self.app.initApi()
+			self.app.initDatabase()
+			self.done_init = True
+		except Exception:
+			showerror(message="Invalid credentials for mastodon account")
+		
+		def startApp(self):
+			self.after(0, self.initAppReq)
+			while not self.done_init:
+				self.update()
+				if self.done_init:
+					break
+			self.update()
+			self.runningScreen()
+			self.protocol('WM_DELETE_WINDOW', self.stopApp)
+			self.callSession()
+	
+\end{lstlisting}
+As well as some of our API calls required a waiting time as mentioned in \ref{ss:rate_lim},
+so we again scheduled them and made an inner loop that updated the window constantly until the API call was executed.
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Updating the window while calling API functions}, captionpos=b]
+	def callSession(self):
+		while True:
+			self.update()
+			print("running")
+		try:
+			self.accounts_reaching_user = []
+			self.after(2400, self.sendRequest)
+			t_end = time.time() + 2.4
+		
+		while time.time() <= t_end:
+			self.update()
+		
+		if len(self.accounts_reaching_user) > 0:
+			for account in self.accounts_reaching_user:
+				threat_checked_account = self.app.isItThreat(account)
+				account_data = threat_checked_account[0]
+				account_name = account_data['username']
+				threat_data = threat_checked_account[1]
+				domain = account_data['url'].split('/')[2]
+				if threat_data:
+				message = ("Account: " + account_name
+				+ "\nFrom domain: " + domain 
+				+ "\nMay be a threat!\nTake action!")
+				showinfo(message=message)
+		
+				self.done = False
+		
+				self.cleanRunning() 
+				self.createAction(account_data, threat_data)
+		
+				while not self.done:
+					self.update()
+					if self.done:
+						break
+				self.cleanAction()
+			self.app.insertAccountInDatabase(account_data, 
+											threat_data)
+		except Exception:
+			print("Error")
+\end{lstlisting}
+Our application has three screens in total, which are:
+\begin{itemize}
+	\item Starting Screen
+	\item Running Screen
+	\item Action Screen
+\end{itemize}
+The approach we took to switch between screens is to draw them when it is needed and
+clear them if it isn't needed.
+\\[5pt]
+All the screen elements are saved in a dictionary created at the GUI initialization where the keys
+describe the screens and the values are list containing the widgets of each screen.
+\\[5pt]
+Below we can see the functions that handle this approach.
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Switching from starting screen to running screen}, captionpos=b]
+	def runningScreen(self):
+		for widget in self.widgets['main']:
+			widget.pack_forget()
+		for widget in self.widgets['running']:
+			widget.pack()
+\end{lstlisting}
+Switching between the starting screen to the running screen is done by removing the widgets of the starting screen and initializing
+the ones in the running screen.
+\begin{lstlisting}[language=python, caption={Switching from running screen to action screen}, captionpos=b]
+	 def cleanRunning(self):
+		for widget in self.widgets['running']:
+			widget.pack_forget()
+	
+	def createAction(self, account_data, threat_data):
+		self.canvas.pack_forget()
+		self.action_label1 = tk.Label(self, text="Account Action", 
+									font=('Ariel', 14), bg='light blue')
+		self.widgets['action'].add(self.action_label1)
+		self.action_label1.pack()
+		
+		self.string_var = tk.StringVar()
+		self.action_combobox = Combobox(self, 
+		textvariable=self.string_var)
+		
+		self.action_combobox['values'] = ("Trust", 
+										"Block",
+										"Mute")
+		self.action_combobox.current(0)
+		self.widgets['action'].add(self.action_combobox)
+		self.action_combobox.pack()
+		
+		self.action_label2 = tk.Label(self, text="Domain Action", 
+									font=('Ariel', 14), bg='light blue')
+		
+		self.widgets['action'].add(self.action_label2)
+		self.action_label2.pack()
+		
+		self.string_var2 = tk.StringVar()
+		self.domain_combobox = Combobox(self, 
+									textvariable=self.string_var2)
+		self.domain_combobox['values'] = ("Trust", 
+										"Block")
+		self.domain_combobox.current(0)
+		self.widgets['action'].add(self.domain_combobox)
+		self.domain_combobox.pack()
+		
+		self.empty_label3 = tk.Label(self, bg='light blue')
+		self.widgets['action'].add(self.empty_label3)
+		self.empty_label3.pack()
+		
+		self.action_button = tk.Button(self, 
+								text='Take action', 
+								command=lambda:
+								self.takeAction(account_data, threat_data))
+		
+		self.widgets['action'].add(self.action_button)
+		self.action_button.pack()
+		self.canvas.pack()
+\end{lstlisting}
+Switching from running screen to action screen is done by removing the running screen widgets and creating the elements 
+of the action screen and packing them in the frame.
+\begin{lstlisting}[language=python, caption={Switching from action screen to running screen}, captionpos=b]
+	def cleanAction(self):
+		for widget in self.widgets['action']:
+			widget.destroy()
+		self.widgets['action'].clear()
+		for widget in self.widgets['running']:
+			widget.pack()
+\end{lstlisting}
+And the other way around, switching from action screen to running screen is done simply by destroying the widgets as object and clearing the list
+under which they were saved, and afterwards packing the running widgets to the frame.
 \section{Testing}
+To test our application we used \textbf{unit testing} and \textbf{manual testing}.
+Running the unit tests was done by the \textbf{Pytest} \cite{pytest} framework, but the run was done by
+the CI build and not locally, so the test success can be checked in the git repository, under
+details in CI build.
+\\[5pt]
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.65\textwidth,height=250px]{images/test_score.png}
+	\caption{Test coverage and success}
+	\label{fig:test_data}
+\end{figure}
+Our unit test coverage was 71 percent, and the other 30 are functions that depend on user behavior, so they were tested manually.
+We applied unit tests on both, API and database, in order to have a quality product.
+\\[5pt]
+We had the test stored separately for database and API, but they were both tested outside their own class, because
+in order to run the tests using Pytest the python file must have the name test in the beginning or in the end, and the
+same applies to the testing method.
+\begin{lstlisting}[language=python, caption={Testing a unit example}, captionpos=b]
+ 	def testCloseConnection(self):
+		database = Database()
+		database.dropAccountTable()
+		database.createTableAccounts()
+
+		id = 1234123
+		user = 'Dion'
+		domain = 'gibberish'
+		threat = False
+
+		database.insertAccount(id, user, domain, threat)
+
+		assert True == database.closeConnection()
+
+		for _ in range(3):
+		assert False == database.closeConnection()
+\end{lstlisting}
+Hence, we did two separate files, one carries the testing of the database and the other one carries the API testing, but
+both of the files are under the same directory called testing.
+\subsection{Manual tests}
+Some of the units were dependent on user behavior so we manually tested them. Other then the units we tested the 
+GUI functionality manually as well, to ensure that we are delivering a fast and a non-crashing GUI.
+Besides those, the switching screen was tested, the account information window (\ref{fig:possible_threat_notification}), action taking fields (\ref{fig:action_page}) in the action
+screen.
 
 
