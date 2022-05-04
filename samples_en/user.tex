@@ -19,6 +19,9 @@ threats it let's the user decide the kind of action
 he wants to take against the account that may be a threat
 and the domain where the account came from.
 \\[5pt]
+This project is targeting all the ELTE server accounts, but with few modification
+it will work for every server.
+\\[5pt]
 As a prerequisite for using this desktop application is
 a stable internet connection and a Mastodon account.
 
@@ -83,7 +86,7 @@ our application log in page.
 As we saw in Figure \ref{fig:empty_page} the button to actually start the application is disabled.
 In order to enable it we must fill all the necessary fields which are:
 \begin{itemize}
-	\item \textbf{Mastodon username}, which is your original Mastodon account username.
+	\item \textbf{Mastodon username or email}, which is your original Mastodon account username.
 	\item \textbf{Mastodon password}, which is your original Mastodon account password, that you use to log in to Mastodon.
 	\item \textbf{Mastodon server}, which is the server your account is currently registered.
 \end{itemize}
@@ -104,14 +107,23 @@ The fields must be filled with the Mastodon account information.
 In the username field you must enter your Mastodon username, and the
 same goes up to password. About the server you need to know which server
 are you in and only type the domain, for example in case there is an account
-like: \textbf{\url{example@mastodon.social}} then the username is example and the server is
-mastodon.social. All of the data are case sensitive, so you must give them
+like: \textbf{\url{example@mastodon.elte.hu}} then the username is example and the server is
+mastodon.elte.hu. All of the data are case sensitive, so you must give them
 exactly as they are originally.
 
 \subsection{Valid log in data}
 \label{ss:correct_data}
 If every data is correct then the application will be connected to the Mastodon API after
-we click on the button. The program will let us now that it is running, and it will not
+we click on the button. But, prior to switching the screen it will show us a confirmation
+message.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.3\textwidth,height=240px]{images/confimlogin.png}
+	\caption{Confirmation window}
+	\label{fig:confirm_logn}
+\end{figure}
+After closing the confirmation window 
+the program will let us now that it is running, and it will not
 change it's state until it recognizes a possible threat for the logged in user.
 \begin{figure}[H]
 	\centering
@@ -134,6 +146,17 @@ as many times as you need.
 	\caption{Incorrect log in data}
 	\label{fig:invalid_data}
 \end{figure}
+But if your account is not registered in "mastodon.elte.hu" domain then
+even if your data is correct you will receive another error message.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\textwidth,height=240px]{images/notelteserver.png}
+	\caption{User is not in ELTE server}
+	\label{fig:not_elte}
+\end{figure}
+As we can see in \ref{fig:not_elte} if the server is not "mastodon.elte.hu" then
+the email that your mastodon account is registered to should be given instead of
+your username.
 
 \section{Actions for the possible threat account}
 \label{s:Actions_threat}

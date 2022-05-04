@@ -315,7 +315,7 @@ a good accuracy on both, training set and testing set, with a difference of 1.1 
 Besides the accuracy we see a good recall and precision score, which makes a good f1 score.
 The confusion matrix tells us that the most of the values predicted are true, and the ROC curve
 shows us a very good AUC score of 0.93.
-\subsection{Passing account data to model}
+\subsection{Passing account's data to model}
 As it was mentioned in \ref{ss:acc_data}, the function responsible for fetching data returns a dictionary of
 multiple data fields for the account. In order to pass the data we first need to filter them and get the fields
 that are relatable to our model. 
@@ -588,6 +588,9 @@ same applies to the testing method.
 \end{lstlisting}
 Hence, we did two separate files, one carries the testing of the database and the other one carries the API testing, but
 both of the files are under the same directory called testing.
+\\[5pt]
+We also tested the code style using the \textbf{Flake8} \cite{flake} library, which checks your code base against the PEP8 coding
+style.
 \subsection{Manual tests}
 Some of the units were dependent on user behavior so we manually tested them. Other then the units we tested the 
 GUI functionality manually as well, to ensure that we are delivering a fast and a non-crashing GUI.
