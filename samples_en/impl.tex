@@ -401,12 +401,20 @@ is finished.
 \begin{lstlisting}[language=python, caption={Updating window while initializing the API and database}, captionpos=b]
 	def initAppReq(self):
 		try:
+			self.protocol('WM_DELETE_WINDOW', func=lambda: os._exit(0))
 			self.app = Application(self.username, self.password, self.server)
 			self.app.initApi()
 			self.app.initDatabase()
 			self.done_init = True
 		except Exception:
-			showerror(message="Invalid credentials for mastodon account")
+			if('elte.hu' not in self.server and '@' not in self.username):
+				showerror(message="You should enter your email "
+									+ "instead of your username "
+									+ "since the server is not "
+									+ "mastodon.elte.hu")
+			else:
+				showerror(message="Invalid credentials for mastodon account")
+							
 		
 		def startApp(self):
 			self.after(0, self.initAppReq)
@@ -414,7 +422,9 @@ is finished.
 				self.update()
 				if self.done_init:
 					break
+				self.update()
 			self.update()
+			showinfo(message="You are now logged in")
 			self.runningScreen()
 			self.protocol('WM_DELETE_WINDOW', self.stopApp)
 			self.callSession()
@@ -431,13 +441,14 @@ so we again scheduled them and made an inner loop that updated the window consta
 		try:
 			self.accounts_reaching_user = []
 			self.after(2400, self.sendRequest)
-			t_end = time.time() + 2.4
+			t_end = time.time() + 2.6
 		
 		while time.time() <= t_end:
 			self.update()
 		
 		if len(self.accounts_reaching_user) > 0:
 			for account in self.accounts_reaching_user:
+				self.update()
 				threat_checked_account = self.app.isItThreat(account)
 				account_data = threat_checked_account[0]
 				account_name = account_data['username']
