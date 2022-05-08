@@ -86,7 +86,7 @@ our application log in page.
 As we saw in Figure \ref{fig:empty_page} the button to actually start the application is disabled.
 In order to enable it we must fill all the necessary fields which are:
 \begin{itemize}
-	\item \textbf{Mastodon username or email}, which is your original Mastodon account username.
+	\item \textbf{Mastodon username}, which is your original Mastodon account username.
 	\item \textbf{Mastodon password}, which is your original Mastodon account password, that you use to log in to Mastodon.
 	\item \textbf{Mastodon server}, which is the server your account is currently registered.
 \end{itemize}
@@ -107,15 +107,15 @@ The fields must be filled with the Mastodon account information.
 In the username field you must enter your Mastodon username, and the
 same goes up to password. About the server you need to know which server
 are you in and only type the domain, for example in case there is an account
-like: \textbf{\url{example@mastodon.elte.hu}} then the username is example and the server is
-mastodon.elte.hu. All of the data are case sensitive, so you must give them
+like: \textbf{\url{example@mastodon.elte.hu}} then the username is \textbf{example} and the server is
+\textbf{mastodon.elte.hu}. All of the data are case sensitive, so you must give them
 exactly as they are originally.
 
 \subsection{Valid log in data}
 \label{ss:correct_data}
 If every data is correct then the application will be connected to the Mastodon API after
 we click on the button. But, prior to switching the screen it will show us a confirmation
-message.
+message after API initialization which is about 7.5 seconds, meaning that the user has to wait for the required time.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.3\textwidth,height=240px]{images/confimlogin.png}
@@ -167,7 +167,7 @@ for possible threats.
 Every time that we are going to receive a direct message or a tag notification, that account's data is going to be checked whether it has a possibility to be a threat or not. After checking
 if the account, that was trying to reach you, is considered to be a possible threat, the application
 will show you a warning message containing the possible threat account's username and domain,
-and will ask you to take a certain action against the account.
+and will ask you to take a certain action against the account and the account's domain.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.3\textwidth,height=240px]{images/threatnotif.png}
@@ -243,7 +243,7 @@ The following table will describe each action.
 		\endlastfoot % table footer on last page
 		
 		\emph{Trust}
-		& This action is very simple in context. When the user takes this function it means
+		& This action is very simple in context. When the user takes this action it means
 		that he is trusting the possible threat account, and the application will not check the same account again, if it is trying to reach the user again.
 		\\ \hline
 		

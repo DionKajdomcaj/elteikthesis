@@ -22,7 +22,7 @@ directly from our application, without the need of doing it through Mastodon.
 For this application we used an already created API for Python called
 \textbf{Mastodon API}  \cite{apimast}.
 \\[5pt]
-Below we can see a scheme of how our this API operates.
+Below we can see a scheme of how this API operates.
 \\[5pt]
 \begin{figure}[H]
 	\centering
@@ -33,11 +33,11 @@ Below we can see a scheme of how our this API operates.
 \subsection{API rate limits}\label{ss:rate_lim}
 This API has a fixed rate-limit that is 300 requests per 5 minutes, in order not to
 violate the rate-limit and make the user wait for 5 minutes until the rate-limit resets, we
-needed to get data from the live server every 2.4 second so the user can get the full
+needed to get data from the live server every 2.6 second so the user can get the full
 experience of Mastodon. This being said, user has enough time to surf the feed without having
 to wait for 5 minutes.
 \subsection{API initialization}\label{ss:api_init}
-To use this API we need to use the user's credentials to log into Mastodon account through API, and those credentials will be saved in \textit{.secret} files in the directory where we call the API, and that is the reason why the user must give the credentials in the starting of the application. Below is a the snippet for logging in to the Mastodon account through API.
+To use this API we need to use the user's credentials to log into Mastodon account through API, and those credentials will be saved in \textit{.secret} files in the directory where we call the API, and that is the reason why the user must give the credentials in the starting window of the application. Below is a the snippet for logging in to the Mastodon account through API.
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Logging in to Mastodon account through API}, captionpos=b ]
 	def __init__(self):
@@ -94,7 +94,7 @@ So, we have to create a access token from our the user credentials saved in \tex
 We will deep dive into each of the methods in the following sections.
 \subsection{Notifications}\label{ss:notif}
 To get the accounts that are trying to reach the user, we first need to get the notifications and filter them to only get the direct messages and tags, which is done
-by setting the parameter named \textbf{mentions} to true.
+by setting the parameter named \textbf{mentions\_only} to true.
 To get the notifications through the API we can use the following method:
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Getting the notifications by API}, captionpos=b]
@@ -142,7 +142,7 @@ And in order to fetch those data we can simply call the API method which is as b
 \end{lstlisting}
 This method will return the data as a dictionary where the keys are the public data names and the values are their values.
 \subsection{Getting user's following accounts}
-We know that if we follow someone that means we most probably know him. Hence, we need to trust the accounts we follow when we start our application. To trust them we need to get the list of the accounts which is done by the following method:
+We know that if we follow someone that means we most probably know him. Hence, we need to trust the accounts we follow when we start our application. To trust them we need to get the list of the accounts we follow, which is done by the following method:
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Method to get the list of the accounts we follow}, captionpos=b]
 	def getFollowingAccounts(self):
@@ -219,7 +219,7 @@ It is worth mentioning that we considered the following account's data only:
 	\item \textbf{Domain}, account's Mastodon domain.
 	\item \textbf{Year of creation}, the year when the account was created.
 \end{itemize}
-As we can see we had some of the data in string format, like year of creating and domain, so we
+As we can see we had some of the data in string format, like year of creation and domain, so we
 had to use the dummy encoder from Pandas and that limited our range of domains and year of creation.
 So, now the model recognized only the following domains:
 \begin{itemize}
@@ -247,7 +247,7 @@ Besides outliars, we didn't have any null value in the fields we used to train, 
 since we didn't have to deal with null values.
 \\[5pt]
 One important thing that is worth mentioning is that we discovered a pattern that showed us that if an account has
-way more followings than followers, doesn't have a profile picture or the followings number is very low(0 to 4), the
+way more followings than followers, doesn't have a profile picture or the followings count is very low, ranging from 0 to 4, the
 chances for that account to be a possible threat were higher.
 \subsection{Model performance}
 We mentioned in \ref{s:model} that we needed a low complexity algorithm, and we know that we have three different kinds
@@ -368,7 +368,7 @@ The handled accounts table consists of these data:
 	\item \textbf{Threat boolean}
 \end{itemize}
 So, whenever an account is getting checked for the threat possibility, it will immediately go in the database
-after the threat possibility result is given, and that account doesn't need to be checked twice since its in the database
+after the threat possibility result is given, and that account doesn't need to be checked twice since it's in the database
 of the handled accounts already.
 \subsection{Handled domains table}
 The handled domain table consists of these data:
@@ -394,7 +394,7 @@ It is worth mentioning that the whole GUI is not resizable, meaning that there i
 that the user needs the GUI to be as small as possible but well visible, because he will run it in the background.
 \\5[pt]
 During the front-end our main problem was updating the window constantly since our application has some loops and the Tkinter
-built-in function \textbf{withdraw} is a loop itself. Even when we wanted to initialize the API and the database, there were a few
+built-in function \textbf{mainloop} is a loop itself. Even when we wanted to initialize the API and the database, there were a few
 seconds taken while being executed, meaning that we had to schedule the initialization and update the window until the initialization
 is finished. 
 \\[5pt]
@@ -487,7 +487,7 @@ clear them if it isn't needed.
 All the screen elements are saved in a dictionary created at the GUI initialization where the keys
 describe the screens and the values are list containing the widgets of each screen.
 \\[5pt]
-Below we can see the functions that handle this approach.
+Below we can see the functions that handles this approach.
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Switching from starting screen to running screen}, captionpos=b]
 	def runningScreen(self):
