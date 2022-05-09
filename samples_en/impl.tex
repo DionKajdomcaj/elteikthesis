@@ -392,7 +392,7 @@ the possibility of the threat or not.
 \\[5pt]
 It is worth mentioning that the whole GUI is not resizable, meaning that there is one permanent size, and this is done for the reason
 that the user needs the GUI to be as small as possible but well visible, because he will run it in the background.
-\\5[pt]
+\\[5pt]
 During the front-end our main problem was updating the window constantly since our application has some loops and the Tkinter
 built-in function \textbf{mainloop} is a loop itself. Even when we wanted to initialize the API and the database, there were a few
 seconds taken while being executed, meaning that we had to schedule the initialization and update the window until the initialization
@@ -401,33 +401,38 @@ is finished.
 \begin{lstlisting}[language=python, caption={Updating window while initializing the API and database}, captionpos=b]
 	def initAppReq(self):
 		try:
-			self.protocol('WM_DELETE_WINDOW', func=lambda: os._exit(0))
+			self.after(100, self.waitTime(3.5))
 			self.app = Application(self.username, self.password, self.server)
-			self.app.initApi()
-			self.app.initDatabase()
+			self.after(0, self.app.initApi())
+			self.waitTime(2)
+			self.after(0, self.app.initDatabase())
+			self.waitTime(2)
 			self.done_init = True
-		except Exception:
+			except Exception:
+			self.widgets['main'][7]['state'] = tk.NORMAL
 			if('elte.hu' not in self.server and '@' not in self.username):
 				showerror(message="You should enter your email "
 									+ "instead of your username "
 									+ "since the server is not "
 									+ "mastodon.elte.hu")
-			else:
-				showerror(message="Invalid credentials for mastodon account")
-							
+		else:
+			showerror(message="Invalid credentials for mastodon account")
+	
+	def startApp(self):
+		self.widgets['main'][7]['state'] = tk.DISABLED
+		self.update()
+		self.after(0, self.initAppReq)
 		
-		def startApp(self):
-			self.after(0, self.initAppReq)
-			while not self.done_init:
-				self.update()
-				if self.done_init:
-					break
-				self.update()
+		while not self.done_init:
 			self.update()
-			showinfo(message="You are now logged in")
-			self.runningScreen()
-			self.protocol('WM_DELETE_WINDOW', self.stopApp)
-			self.callSession()
+			if self.done_init:
+				break
+			self.update()
+		self.update()
+		showinfo(message="You are now logged in")
+		self.runningScreen()
+		self.protocol('WM_DELETE_WINDOW', self.stopApp)
+		self.callSession()
 	
 \end{lstlisting}
 As well as some of our API calls required a waiting time as mentioned in \ref{ss:rate_lim},
