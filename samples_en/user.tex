@@ -39,22 +39,20 @@ To download the application we need to clone the following repository:
 \url{https://github.com/DionKajdomcaj/Mastodon-Social-Threat-Alert.git}.
 \\[5pt]
 Prior to cloning the repository we need to make sure that we have git.
-If git is missing, the user can dowload it at the
-following url: \url{https://git-scm.com/download/win}
+If git is missing, the user can download it at the
+following url: \url{https://git-scm.com/download/win}.
 If the git prerequisite is met, we can clone the repository by
-entering the following command in the command prompt:
+running the following command in the command prompt:
 \\[5pt]
 \begin{lstlisting}[caption=Cloning Repository, captionpos=b]
 	C:\Users\dionk>git clone https://github.com/DionKajdomcaj/Mastodon-Social-Threat-Alert.git
-	\label{c:clone}
 \end{lstlisting}
-
 After succeeding to clone the repository we need to install the requirements for
 our environment. In order to install the requirements we need to make sure we have
 pip command. If the pip command is not installed, the user can install it by clicking
-the following url: \url{https://phoenixnap.com/kb/install-pip-windows}.
+on the following url: \url{https://phoenixnap.com/kb/install-pip-windows}.
 \\[5pt]
-In the application folder there is a file called requirements, installing it
+In the application folder there is a text file called requirements, installing it
 will download all the libraries needed to run the application.
 \\[5pt]
 We can install them by using the following command in command prompt:
@@ -73,7 +71,7 @@ we are in the correct directory and then run the following command:
 \end{lstlisting}
 
 After running the command, if all the prerequisites are met, we can see 
-our application log in page.
+our application log in page, but the user must not close the command line while using the application since it will terminate the application.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.3\textwidth,height=240px]{images/mainpageapp.png}
@@ -83,15 +81,15 @@ our application log in page.
 
 \section{Logging in}
 \label{s:Logging_in}
-As we saw in Figure \ref{fig:empty_page} the button to actually start the application is disabled.
-In order to enable it we must fill all the necessary fields which are:
+As we saw in figure \ref{fig:empty_page} the button to actually start the application is disabled.
+In order to enable it we must fill all the necessary text fields which are:
 \begin{itemize}
 	\item \textbf{Mastodon username}, which is your original Mastodon account username.
 	\item \textbf{Mastodon password}, which is your original Mastodon account password, that you use to log in to Mastodon.
-	\item \textbf{Mastodon server}, which is the server your account is currently registered.
+	\item \textbf{Mastodon server}, which is the server your account is currently registered in.
 \end{itemize}
 
-If only one of them is missing then the user will not be able
+If only one of the text fields is missing then the user will not be able
 to start the application nor use it. 
 \begin{figure}[H]
 	\centering
@@ -103,7 +101,7 @@ to start the application nor use it.
 	\caption{Button disabled and enabled}
 	\label{fig:buttonenabled}
 \end{figure}
-The fields must be filled with the Mastodon account information.
+The text fields must be filled with the Mastodon account information.
 In the username field you must enter your Mastodon username, and the
 same goes up to password. About the server you need to know which server
 are you in and only type the domain, for example in case there is an account
@@ -115,15 +113,15 @@ exactly as they are originally.
 \label{ss:correct_data}
 If every data is correct then the application will be connected to the Mastodon API after
 we click on the button. But, prior to switching the screen it will show us a confirmation
-message after API initialization which is about 7.5 seconds, meaning that the user has to wait for the required time.
+message after API initialization. The API initialization takes a few seconds to be done so the user must wait during those seconds.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.3\textwidth,height=240px]{images/confimlogin.png}
 	\caption{Confirmation window}
 	\label{fig:confirm_logn}
 \end{figure}
-After closing the confirmation window 
-the program will let us now that it is running, and it will not
+After closing the confirmation window, 
+the program will let us know that it is running, and it will not
 change it's state until it recognizes a possible threat for the logged in user.
 \begin{figure}[H]
 	\centering
@@ -138,7 +136,7 @@ Even if the button is enabled it does not mean that the log in data entered by t
 are correct. So, if the user does not give the valid log in data then the application 
 will not be connected to Mastodon API. Hence, it will give the user an error message.
 The following figure is going to show you the message you will receive for giving invalid 
-log in data. After receiving the message you can just press the message button and try again
+log in data. After receiving the message you can just close the message window and try again
 as many times as you need.
 \begin{figure}[H]
 	\centering
@@ -150,7 +148,7 @@ But if your account is not registered in "mastodon.elte.hu" domain then
 even if your data is correct you will receive another error message.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.4\textwidth,height=240px]{images/notelteserver.png}
+	\includegraphics[width=0.4\textwidth,height=240px]{images/notelteserver3.jpg}
 	\caption{User is not in ELTE server}
 	\label{fig:not_elte}
 \end{figure}
@@ -160,7 +158,7 @@ your username.
 
 \section{Actions for the possible threat account}
 \label{s:Actions_threat}
-Now that we logged in successfully, we can start using Mastodon as usually, but this
+Now that we logged in successfully, we can start using Mastodon as usual, but this
 time we have the Mastodon threat alert application running on the background and looking
 for possible threats.
 \\[5pt]
@@ -176,7 +174,7 @@ and will ask you to take a certain action against the account and the account's 
 \end{figure}
 
 We have three kind of actions supported in our application depending whether
-we want to take them against an account or a domain. These actions are
+we want to take them against an account or a domain. These actions are:
 \begin{itemize}
 	\item \textbf{Trust}
 	\item \textbf{Block}
@@ -214,7 +212,7 @@ you know that the actions were successful.
 	\label{fig:pop_up_action}
 \end{figure}
 After closing the pop up window, the application will go back to
-it's running state as in Figure \ref{fig:running_app}.
+it's running state as in figure \ref{fig:running_app}.
 
 \subsection{Account action}\label{ss:act_action}
 As it was mentioned before, we can choose the actions separately for the possible threat account and it's
@@ -244,7 +242,7 @@ The following table will describe each action.
 		
 		\emph{Trust}
 		& This action is very simple in context. When the user takes this action it means
-		that he is trusting the possible threat account, and the application will not check the same account again, if it is trying to reach the user again.
+		that he is trusting the possible threat account, and the application will not check the same account if it is trying to reach the user again.
 		\\ \hline
 		
 		\emph{Block}
@@ -291,7 +289,7 @@ In the following table you can understand their functionality.
 		\\ \hline
 		
 		\emph{Block}
-		& In case of Block the whole activity of the domain accounts is blocked, meaning that the user won't see any of the accounts that belong in that domain activity. But, the user should always be very careful and is recommended not to block domains unless he/she was disturbed many times by the accounts coming from the same domain.
+		& In case of Block the whole activity of the domain accounts is blocked, meaning that the user won't see any of the accounts, that belong in that domain, activity. But, the user should always be very careful and is recommended not to block domains unless he/she was disturbed many times by the accounts coming from the same domain.
 		\\ \hline
 
 		\caption{Description of every action that can be taken against a domain}
@@ -300,7 +298,7 @@ In the following table you can understand their functionality.
 \end{center}
 Same as in the account actions, the domain actions can be reverted in Mastodon.
 \section{Exiting the application}
-As we can see in figure \ref{fig:running_app}, we can exit the application in two ways, by clicking the button named \textit{Exit the application} or by simply closing the window. It is recommended to exit the application by clicking the button because it is terminated safely, but sometimes when we want to exit it while we are not on the running page, we can exit the application by closing the window as well. However, it is not recommended to close the application while taking actions, like in figure \ref{fig:action_page}, because the possible threat account's will not be saved in the database.
+As we can see in figure \ref{fig:running_app}, we can exit the application in two ways, by clicking the button named \textit{Exit the application} or by simply closing the window. It is recommended to exit the application by clicking the button because it is terminated safely, but sometimes when we want to exit it while we are not on the running page, we can exit the application by closing the window as well. However, it is not recommended to close the application while taking actions, like in figure \ref{fig:action_page}, because the possible threat account's will not be saved in the database and no action will be taken against the possible threat account and it's domain.
 
 
 

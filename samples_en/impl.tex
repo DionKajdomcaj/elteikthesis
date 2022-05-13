@@ -13,11 +13,11 @@ not the correct way to use it without using Mastodon.
 
 
 \section{Mastodon API}\label{s:api}
-As it was mentioned in \ref{s:project_desc}, this application check whether an account
-that is trying to reach you is a possible threat or not. To do this checking we need the data
-of the account. So, we have to connect to a API that get the data from
+As it was mentioned in \ref{s:project_desc}, this application checks whether an account
+that is trying to reach you is a possible threat or not. To do this check we need the data
+of the account. So, we have to connect to an API that gets the data from
 the live Mastodon server in order to check the possibility of a threat account.
-Other than that, the API is used to let us take the actions mentioned in \ref{s:Actions_threat}
+In addition, the API is used to let us take the actions mentioned in \ref{s:Actions_threat}
 directly from our application, without the need of doing it through Mastodon.
 For this application we used an already created API for Python called
 \textbf{Mastodon API}  \cite{apimast}.
@@ -32,14 +32,14 @@ Below we can see a scheme of how this API operates.
 \end{figure}
 \subsection{API rate limits}\label{ss:rate_lim}
 This API has a fixed rate-limit that is 300 requests per 5 minutes, in order not to
-violate the rate-limit and make the user wait for 5 minutes until the rate-limit resets, we
+violate the rate-limit and not make the user wait for 5 minutes until the rate-limit resets, we
 needed to get data from the live server every 2.6 second so the user can get the full
-experience of Mastodon. This being said, user has enough time to surf the feed without having
+experience of Mastodon. This being said, the user has enough time to surf the feed without having
 to wait for 5 minutes.
 \subsection{API initialization}\label{ss:api_init}
-To use this API we need to use the user's credentials to log into Mastodon account through API, and those credentials will be saved in \textit{.secret} files in the directory where we call the API, and that is the reason why the user must give the credentials in the starting window of the application. Below is a the snippet for logging in to the Mastodon account through API.
+To use this API we need to use the user's credentials to log into Mastodon account through the API, and those credentials will be saved in \textit{.secret} files in the directory where we call the API, and that is the reason why the user must give the credentials in the starting window of the application. Below are the methods required to call in order to log into the Mastodon account through the API.
 \\[5pt]
-\begin{lstlisting}[language=python, caption={Logging in to Mastodon account through API}, captionpos=b ]
+\begin{lstlisting}[language=python, caption={Logging in to Mastodon account through the API}, captionpos=b ]
 	def __init__(self):
 		self._user = Mastodon()
 		self._userApiInstance = Mastodon()
@@ -72,7 +72,7 @@ To use this API we need to use the user's credentials to log into Mastodon accou
 			)
 \end{lstlisting}
 \subsection{API instance}\label{ss:api_instance}
-Logging in to the account is not enough in order to use this API, but we can say it is a very important step and a must. To actually start using the API we need to create an API instance for that account. Below you can see the snippet of creating the API instance for both user account or admin account.
+Logging in to the account is not enough in order to use this API, but we can say it is a very important step and a must. To actually start using the API we need to create an API instance for that account. Below you can see the method that creates the API instance for both, user account or admin account.
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Creating API instance}, captionpos=b]
 	def createApiInstance(self):
@@ -81,13 +81,13 @@ Logging in to the account is not enough in order to use this API, but we can say
 				api_base_url=self._mastodonServer
 		)
 \end{lstlisting}
-So, we have to create a access token from our the user credentials saved in \textit{.secret} file, and after creating the API instance we can start using the API methods. The main methods that this application uses are:
+So, we have to create an access token from the user credentials saved in \textit{.secret} file, and after creating the API instance we can start using the API methods. The main methods that this application uses are:
 \begin{itemize}
 	\item \textbf{Get the notifications}
 	\item \textbf{Clear the notifications}
 	\item \textbf{Block an account}
 	\item \textbf{Block a domain}
-	\item \textbf{Get certain account's data}
+	\item \textbf{Get a certain account's data}
 	\item \textbf{Get user's following accounts}
 	\item \textbf{Mute an account}
 \end{itemize}
@@ -121,7 +121,7 @@ And in order to filter them we need to go through each and filter them by their 
 			return []
 \end{lstlisting}
 \subsection{Getting account's data}\label{ss:acc_data}
-As it was mentioned in \ref{s:api} we need to get the account's data in order to check for the possibility of the threat. To get the data of a certain account, we need that account's id and we can get public data for that account such as:
+As it was mentioned in \ref{s:api} we need to get the account's data in order to check for the possibility of the threat. To get the data of a certain account, we need that account's id and we can get the public data for that account such as:
 \begin{itemize}
 	\item \textbf{Account ID}
 	\item \textbf{Username}
@@ -142,7 +142,7 @@ And in order to fetch those data we can simply call the API method which is as b
 \end{lstlisting}
 This method will return the data as a dictionary where the keys are the public data names and the values are their values.
 \subsection{Getting user's following accounts}
-We know that if we follow someone that means we most probably know him. Hence, we need to trust the accounts we follow when we start our application. To trust them we need to get the list of the accounts we follow, which is done by the following method:
+We know that if we follow someone that means we most probably know him/her. Hence, we need to trust the accounts we follow when we start our application. To trust them we need to get the list of the accounts we follow, which is done by the following method:
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Method to get the list of the accounts we follow}, captionpos=b]
 	def getFollowingAccounts(self):
@@ -171,7 +171,6 @@ and the account with that id will be blocked.
 \begin{lstlisting}[language=python, caption={Blocking an account method}, captionpos=b]
 	def blockAccount(self, account_id):
 		self._userApiInstance.account_block(account_id)
-		print("done")
 		return True
 \end{lstlisting}
 \subsection{Muting an account}
@@ -199,7 +198,7 @@ model so it doesn't need to go through the training process again we used \textb
 \\[5pt]
 Since our problem was to classify whether an account has a possibility of being a threat,
 we had to choose between the classification algorithms. Considering multiple factors and trying
-multiple algorithms we chose to go with Logistic regression for these reasons:
+multiple algorithms we chose to go with Logistic regression for these main reasons:
 \begin{itemize}
 	\item \textbf{Small dataset}, Logistic regression is known to give the best results in small datasets.
 	\item \textbf{Low complexity model}, since we had to classify between two classes and we had 19 features to consider,
@@ -241,7 +240,7 @@ After normalization we split the dataset into training set and testing set, wher
 training set and the other 30 percent of the data was on the testing set.
 \subsection{Exploratory data analysis - EDA}
 During our EDA we found out that we have some outliars in our dataset, but the number was quite low, somewhere from 4 to 7
-in total. Hence, we didn't remove the outliars since the number was very low and it doesn't affect the training dataset.
+in total. Hence, we didn't remove the outliars since the number was very low and it didn't affect the training dataset.
 \\[5pt]
 Besides outliars, we didn't have any null value in the fields we used to train, which made our EDA process less complex
 since we didn't have to deal with null values.
@@ -258,7 +257,7 @@ provided by Scikit-learn which are:
 	\item \textbf{Naive Bayes}
 \end{itemize}
 After trying each of the algorithms, we wanted to go with Logistic regression since the performance, confusion matrix
-and the ROC curve was showing us that Logistic regression is performing better in comparison to the two others.
+and the ROC curve was showing us that Logistic regression is performing better in comparison to the other two.
 \\[5pt]
 \begin{figure}[H]
 	\centering
@@ -293,7 +292,7 @@ is quite low and the ROC curve isn't the best.
 Now for the SVC algorithm we can see perfect scores in case of precision, which is impossible to be 1.0
 , meaning that we might have an overfitting problem. But, other than precision the other scores show us a promising
 model until we watch the confusion matrix and the ROC curve. We can see that the confusion matrix is giving us more false predicted
-values than it should have meaning that most of the predictions the model made were false predictions. Not only confusion matrix is
+values than it should have, meaning that most of the predictions the model made were false predictions. Not only confusion matrix is
 giving us a red light for this model, but even the AUC value which is showing us an awful result, where most of the points are below the
 middle point.
 \\[5pt]
@@ -391,49 +390,47 @@ executions and the program. Whereas, the back-end is responsible for the whole l
 the possibility of the threat or not.
 \\[5pt]
 It is worth mentioning that the whole GUI is not resizable, meaning that there is one permanent size, and this is done for the reason
-that the user needs the GUI to be as small as possible but well visible, because he will run it in the background.
+that the user needs the GUI to be as small as possible but well visible, because he will run it on the background.
 \\[5pt]
 During the front-end our main problem was updating the window constantly since our application has some loops and the Tkinter
 built-in function \textbf{mainloop} is a loop itself. Even when we wanted to initialize the API and the database, there were a few
-seconds taken while being executed, meaning that we had to schedule the initialization and update the window until the initialization
-is finished. 
+seconds taken while being executed, meaning that we had to start a separate thread to initialize it while the window is being updated constantly until the initialization is completed.
+\\[5pt]
+The thread was created by using the \textbf{Threading} \cite{thread} python module.
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Updating window while initializing the API and database}, captionpos=b]
 	def initAppReq(self):
 		try:
-			self.after(100, self.waitTime(3.5))
 			self.app = Application(self.username, self.password, self.server)
-			self.after(0, self.app.initApi())
-			self.waitTime(2)
-			self.after(0, self.app.initDatabase())
-			self.waitTime(2)
+			self.app.initApi()
 			self.done_init = True
-			except Exception:
+		except Exception:
 			self.widgets['main'][7]['state'] = tk.NORMAL
 			if('elte.hu' not in self.server and '@' not in self.username):
 				showerror(message="You should enter your email "
 									+ "instead of your username "
 									+ "since the server is not "
 									+ "mastodon.elte.hu")
-		else:
-			showerror(message="Invalid credentials for mastodon account")
+			else:
+				showerror(message="Invalid credentials for mastodon account")
 	
 	def startApp(self):
 		self.widgets['main'][7]['state'] = tk.DISABLED
 		self.update()
-		self.after(0, self.initAppReq)
-		
+		init_thread = Thread(target=self.initAppReq, daemon=True)
+		init_thread.start()
 		while not self.done_init:
 			self.update()
 			if self.done_init:
 				break
 			self.update()
+		self.app.initDatabase()
+		init_thread.join()
 		self.update()
 		showinfo(message="You are now logged in")
 		self.runningScreen()
 		self.protocol('WM_DELETE_WINDOW', self.stopApp)
 		self.callSession()
-	
 \end{lstlisting}
 As well as some of our API calls required a waiting time as mentioned in \ref{ss:rate_lim},
 so we again scheduled them and made an inner loop that updated the window constantly until the API call was executed.
@@ -443,42 +440,39 @@ so we again scheduled them and made an inner loop that updated the window consta
 		while True:
 			self.update()
 			print("running")
-		try:
-			self.accounts_reaching_user = []
-			self.after(2400, self.sendRequest)
-			t_end = time.time() + 2.6
-		
-		while time.time() <= t_end:
-			self.update()
-		
-		if len(self.accounts_reaching_user) > 0:
-			for account in self.accounts_reaching_user:
-				self.update()
-				threat_checked_account = self.app.isItThreat(account)
-				account_data = threat_checked_account[0]
-				account_name = account_data['username']
-				threat_data = threat_checked_account[1]
-				domain = account_data['url'].split('/')[2]
-				if threat_data:
-				message = ("Account: " + account_name
-				+ "\nFrom domain: " + domain 
-				+ "\nMay be a threat!\nTake action!")
-				showinfo(message=message)
-		
-				self.done = False
-		
-				self.cleanRunning() 
-				self.createAction(account_data, threat_data)
-		
-				while not self.done:
-					self.update()
-					if self.done:
-						break
-				self.cleanAction()
-			self.app.insertAccountInDatabase(account_data, 
-											threat_data)
-		except Exception:
-			print("Error")
+			try:
+				self.accounts_reaching_user = []
+				self.after(2400, self.sendRequest)
+				self.waitTime(2.6)
+				
+				if len(self.accounts_reaching_user) > 0:
+					for account in self.accounts_reaching_user:
+						self.update()
+						threat_checked_account = self.app.isItThreat(account)
+						account_data = threat_checked_account[0]
+						account_name = account_data['username']
+						threat_data = threat_checked_account[1]
+						domain = account_data['url'].split('/')[2]
+						if threat_data:
+							message = ("Account: " + account_name
+										+ "\nFrom domain: " + domain 
+										+ "\nMay be a threat!\nTake action!")
+							showinfo(message=message)
+				
+						self.done = False
+				
+						self.cleanRunning() 
+						self.createAction(account_data, threat_data)
+	 		
+						while not self.done:
+							self.update()
+							if self.done:
+								break
+						self.cleanAction()
+				self.app.insertAccountInDatabase(account_data, 
+												threat_data)
+			except Exception:
+				print("Error")
 \end{lstlisting}
 Our application has three screens in total, which are:
 \begin{itemize}
@@ -503,6 +497,7 @@ Below we can see the functions that handles this approach.
 \end{lstlisting}
 Switching between the starting screen to the running screen is done by removing the widgets of the starting screen and initializing
 the ones in the running screen.
+\\[5pt]
 \begin{lstlisting}[language=python, caption={Switching from running screen to action screen}, captionpos=b]
 	 def cleanRunning(self):
 		for widget in self.widgets['running']:
@@ -556,6 +551,7 @@ the ones in the running screen.
 \end{lstlisting}
 Switching from running screen to action screen is done by removing the running screen widgets and creating the elements 
 of the action screen and packing them in the frame.
+\\[5pt]
 \begin{lstlisting}[language=python, caption={Switching from action screen to running screen}, captionpos=b]
 	def cleanAction(self):
 		for widget in self.widgets['action']:
@@ -569,22 +565,23 @@ under which they were saved, and afterwards packing the running widgets to the f
 \section{Testing}
 To test our application we used \textbf{unit testing} and \textbf{manual testing}.
 Running the unit tests was done by the \textbf{Pytest} \cite{pytest} framework, but the run was done by
-the CI build and not locally, so the test success can be checked in the git repository, under
+the CI build and not locally, so the test success can be checked in the git repository (see \ref{s:installation_guide}), under
 details in CI build.
 \\[5pt]
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.65\textwidth,height=250px]{images/test_score.png}
+	\includegraphics[width=0.65\textwidth,height=250px]{images/test_score2.png}
 	\caption{Test coverage and success}
 	\label{fig:test_data}
 \end{figure}
-Our unit test coverage was 71 percent, and the other 30 are functions that depend on user behavior, so they were tested manually.
+Our unit test coverage was 70 percent, and the other 30 are functions that depend on user behavior, so they were tested manually.
 We applied unit tests on both, API and database, in order to have a quality product.
 \\[5pt]
 We had the test stored separately for database and API, but they were both tested outside their own class, because
 in order to run the tests using Pytest the python file must have the name test in the beginning or in the end, and the
 same applies to the testing method.
-\begin{lstlisting}[language=python, caption={Testing a unit example}, captionpos=b]
+\\[5pt]
+\begin{lstlisting}[language=python, caption={Example method to test a unit}, captionpos=b]
  	def testCloseConnection(self):
 		database = Database()
 		database.dropAccountTable()
@@ -607,10 +604,10 @@ both of the files are under the same directory called testing.
 \\[5pt]
 We also tested the code style using the \textbf{Flake8} \cite{flake} library, which checks your code base against the PEP8 coding
 style.
-\subsection{Manual tests}
-Some of the units were dependent on user behavior so we manually tested them. Other then the units we tested the 
+\subsection{Manual testing}
+Some of the units were dependent on user behavior so we manually tested them. In addition, we tested the 
 GUI functionality manually as well, to ensure that we are delivering a fast and a non-crashing GUI.
-Besides those, the switching screen was tested, the account information window (\ref{fig:possible_threat_notification}), action taking fields (\ref{fig:action_page}) in the action
+Besides those, the switching between screens was tested, the account information window (see \ref{fig:possible_threat_notification}), action taking fields (see \ref{fig:action_page}) in the action
 screen.
 
 
