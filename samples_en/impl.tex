@@ -151,7 +151,7 @@ We know that if we follow someone that means we most probably know him/her. Henc
 \end{lstlisting}
 As we can see, we first need to get our account id and then get the list of the accounts we follow. After having the list of the accounts we follow, we need to trust by inserting each in the application's database so we don't have to check them if they try to reach us.
 \\[5pt]
-\begin{lstlisting}[language=python, caption={Inserting the accounts we follow immediately in the application database}, captionpos=b]
+\begin{lstlisting}[language=python, caption={Inserting the accounts we follow immediately in the application's database}, captionpos=b]
 	def trustFollowings(self):
 		following_accounts = self.api.getFollowingAccounts()   
 		for account_data in following_accounts:
@@ -570,7 +570,7 @@ details in CI build.
 \\[5pt]
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.65\textwidth,height=250px]{images/test_score2.png}
+	\includegraphics[width=0.8\textwidth,height=250px]{images/test_score2.png}
 	\caption{Test coverage and success}
 	\label{fig:test_data}
 \end{figure}
