@@ -31,9 +31,8 @@ a stable internet connection and a Mastodon account.
 As earlier mentioned, in order to use Mastodon social media threat alert application
 we need to have a stable internet connection and a Mastodon account in any server and \textit{Python} 3.10.2.
 \\[5pt]
-The application is currently supporting Windows and Linux but the goal is to extend it as a 
-mobile application which supports IOS and Android. Hence, the installation steps are the same for
-both, Windows and Linux, but we will go through the steps in Windows specifically.
+The application is currently supporting Windows but the goal is to extend it as a 
+mobile application which supports IOS and Android. Hence, the installation steps we will go through will be in Windows.
 \\[5pt]
 To download the application we need to clone the following repository: 
 \url{https://github.com/DionKajdomcaj/Mastodon-Social-Threat-Alert.git}.
@@ -44,7 +43,7 @@ following url: \url{https://git-scm.com/download/win}.
 If the git prerequisite is met, we can clone the repository by
 running the following command in the command prompt:
 \\[5pt]
-\begin{lstlisting}[caption=Cloning Repository, captionpos=b]
+\begin{lstlisting}[caption=Cloning the repository, captionpos=b]
 	C:\Users\dionk>git clone https://github.com/DionKajdomcaj/Mastodon-Social-Threat-Alert.git
 \end{lstlisting}
 After succeeding to clone the repository we need to install the requirements for
@@ -115,7 +114,7 @@ exactly as they are originally.
 \label{ss:correct_data}
 If every data is correct then the application will be connected to the Mastodon API after
 we click on the button. But, prior to switching the screen it will show us a confirmation
-message after API initialization. The API initialization takes a few seconds to be done so the user must wait during those seconds.
+message after the API initialization. The API initialization takes a few seconds to be done so the user must wait during those seconds.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.3\textwidth,height=240px]{images/confimlogin.png}
@@ -155,7 +154,7 @@ even if your data is correct you will receive another error message.
 	\label{fig:not_elte}
 \end{figure}
 As we can see in \ref{fig:not_elte} if the server is not "mastodon.elte.hu" then
-the email that your mastodon account is registered to should be given instead of
+the email that your Mastodon account is registered to should be given instead of
 your username.
 
 \section{Actions for the possible threat account}
@@ -300,7 +299,7 @@ In the following table you can understand their functionality.
 \end{center}
 Same as in the account actions, the domain actions can be reverted in Mastodon.
 \section{Exiting the application}
-As we can see in figure \ref{fig:running_app}, we can exit the application in two ways, by clicking the button named \textit{Exit the application} or by simply closing the window. It is recommended to exit the application by clicking the button because it is terminated safely, but sometimes when we want to exit it while we are not on the running page, we can exit the application by closing the window as well. However, it is not recommended to close the application while taking actions, like in figure \ref{fig:action_page}, because the possible threat account's will not be saved in the database and no action will be taken against the possible threat account and it's domain.
+As we can see in figure \ref{fig:running_app}, we can exit the application in two ways, by clicking the button named \textit{Exit the application} or by simply closing the window. It is recommended to exit the application by clicking the button because it is terminated safely, but sometimes when we want to exit it while we are not on the running page, we can exit the application by closing the window as well. However, it is not recommended to close the application while taking actions, like in figure \ref{fig:action_page}, because the possible threat account will not be saved in the database and no action will be taken against the possible threat account and it's domain.
 
 
 

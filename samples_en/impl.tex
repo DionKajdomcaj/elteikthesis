@@ -101,7 +101,7 @@ To get the notifications through the API we can use the following method:
 	def getNotifications(self):
 		return self._userApiInstance.notifications(mentions_only=True)
 \end{lstlisting}
-And in order to filter them we need to go through each and filter them by their type and existence in the applications database.
+And in order to filter them we need to go through each and filter them by their type and existence in the application's database.
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Filtering the notifications}, captionpos=b]
 	def startSession(self):
@@ -136,7 +136,7 @@ As it was mentioned in \ref{s:api} we need to get the account's data in order to
 And in order to fetch those data we can simply call the API method which is as below:
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Fetching certain account's public data}, captionpos=b]
-	getAccountData(self, account_id, admin=False):
+	def getAccountData(self, account_id, admin=False):
 		if not admin:
 			return self._userApiInstance.account(account_id)
 \end{lstlisting}
@@ -192,8 +192,8 @@ When it comes to blocking a domain the parameter changes, since the domains are 
 
 \section{Predictive Model}\label{s:model}
 Classifying the possibility of a threat is done by a machine learning predictive model.
-To create our model we used the \textbf{Scikit-learn} \cite{scikit-learn} python library, to
-preprocess the data we used \textbf{Pandas} \cite{pandas} python library and in order to save the
+To create our model we used the \textbf{Scikit-learn} \cite{scikit-learn} Python library, to
+preprocess the data we used \textbf{Pandas} \cite{pandas} Python library and in order to save the
 model so it doesn't need to go through the training process again we used \textbf{Pickle} \cite{pickle}
 \\[5pt]
 Since our problem was to classify whether an account has a possibility of being a threat,
@@ -273,7 +273,7 @@ and the ROC curve was showing us that Logistic regression is performing better i
 	\label{fig:naive_bayes_perf}
 \end{figure}
 For the Naive Bayes algorithm we can see that the mean absolute error is quite high, the
-difference between the training set accuracy and testing test accuracy is more than 10 percent, the f1-score
+difference between the training set accuracy and testing set accuracy is more than 10 percent, the f1-score
 is quite low and the ROC curve isn't the best.
 \\[5pt]
 \begin{figure}[H]
@@ -319,7 +319,7 @@ As it was mentioned in \ref{ss:acc_data}, the function responsible for fetching 
 multiple data fields for the account. In order to pass the data we first need to filter them and get the fields
 that are relatable to our model. 
 \\[5pt]
-\begin{lstlisting}[language=python, caption={Function that returns the model decision}, captionpos=b]
+\begin{lstlisting}[language=python, caption={Method that returns the model decision}, captionpos=b]
 	def modelDecision(self, account_data):
 		dataForModel = {}
 		dataForModel['followers'] = int(account_data['followers_count'])
@@ -347,12 +347,12 @@ that are relatable to our model.
 		print(model_result)
 		return model_result
 \end{lstlisting}
-The function \textbf{modelDecision} filters the data to the ones that are relatable to our model and
+The method \textbf{modelDecision} filters the data to the ones that are relatable to our model and
 afterwards uses those data to predict the result, which is type converted from integer to boolean, and then
 returned as a boolean in the end.
 \section{Database}
 We used database in our application in order to save the already checked users and domains. For the database
-we chose to use the \textbf{SQLite} \cite{sqlite} with it's API python library called \textbf{sqlite3} \cite{sqllite3}.
+we chose to use the \textbf{SQLite} \cite{sqlite} with it's API Python library called \textbf{sqlite3} \cite{sqllite3}.
 \\[5pt]
 We created two tables, one for the handled accounts and one for the handled domains. They are both initialized at the same time
 and they are not connected with each other, meaning that they behave independently.
@@ -373,16 +373,15 @@ of the handled accounts already.
 The handled domain table consists of these data:
 \begin{itemize}
 	\item \textbf{Domain name}, as a primary key.
-	\item \textbf{Threat boolean}
+	\item \textbf{Blocked boolean}
 \end{itemize}
-Same as in \ref{ss:hand_acc}, we will insert the domain into the handled domain table immediately after
-receiving the threat possibility result.
+In case of the domain, we insert it the moment we know the action the user has taken against it, since we need to know whether the user blocked it or not.
 \section{Graphical user interface}
 This application uses a very simple GUI, with the aim that the user cannot do any big mistake during runtime.
 Since, it is planned to run on the background we valued the program safety during the runtime more than the design
 itself.
 \\[5pt]
-The library we used for the GUI is \textbf{Tkinter} \cite{tkinter}, which is provided by python for desktop applications containing many
+The library we used for the GUI is \textbf{Tkinter} \cite{tkinter}, which is provided by Python for desktop applications containing many
 useful elements. In order to read the images we used \textbf{Pillow} \cite{pil}.
 \\[5pt]
 Our GUI consists of a front-end and a back-end part, where the front-end is responsible for displaying the state of the action
@@ -396,7 +395,7 @@ During the front-end our main problem was updating the window constantly since o
 built-in function \textbf{mainloop} is a loop itself. Even when we wanted to initialize the API and the database, there were a few
 seconds taken while being executed, meaning that we had to start a separate thread to initialize it while the window is being updated constantly until the initialization is completed.
 \\[5pt]
-The thread was created by using the \textbf{Threading} \cite{thread} python module.
+The thread was created by using the \textbf{Threading} \cite{thread} Python module.
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Updating window while initializing the API and database}, captionpos=b]
 	def initAppReq(self):
@@ -433,7 +432,7 @@ The thread was created by using the \textbf{Threading} \cite{thread} python modu
 		self.callSession()
 \end{lstlisting}
 As well as some of our API calls required a waiting time as mentioned in \ref{ss:rate_lim},
-so we again scheduled them and made an inner loop that updated the window constantly until the API call was executed.
+so we scheduled them and made an inner loop that updated the window constantly until the API call was executed.
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Updating the window while calling API functions}, captionpos=b]
 	def callSession(self):
@@ -560,13 +559,15 @@ of the action screen and packing them in the frame.
 		for widget in self.widgets['running']:
 			widget.pack()
 \end{lstlisting}
-And the other way around, switching from action screen to running screen is done simply by destroying the widgets as object and clearing the list
+And the other way around, switching from action screen to running screen is done by simply destroying the widgets as objects and clearing the list
 under which they were saved, and afterwards packing the running widgets to the frame.
 \section{Testing}
 To test our application we used \textbf{unit testing} and \textbf{manual testing}.
-Running the unit tests was done by the \textbf{Pytest} \cite{pytest} framework, but the run was done by
+Running the unit tests was done by the \textbf{Pytest} \cite{pytest} framework, but the run was done in
 the CI build and not locally, so the test success can be checked in the git repository (see \ref{s:installation_guide}), under
 details in CI build.
+\\[5pt]
+For the CI we chose to go with \textbf{CircleCI} \cite{ci}
 \\[5pt]
 \begin{figure}[H]
 	\centering
@@ -578,7 +579,7 @@ Our unit test coverage was 70 percent, and the other 30 are functions that depen
 We applied unit tests on both, API and database, in order to have a quality product.
 \\[5pt]
 We had the test stored separately for database and API, but they were both tested outside their own class, because
-in order to run the tests using Pytest the python file must have the name test in the beginning or in the end, and the
+in order to run the tests using Pytest the Python file must have the name test in the beginning or in the end, and the
 same applies to the testing method.
 \\[5pt]
 \begin{lstlisting}[language=python, caption={Example method to test a unit}, captionpos=b]
@@ -602,7 +603,7 @@ same applies to the testing method.
 Hence, we did two separate files, one carries the testing of the database and the other one carries the API testing, but
 both of the files are under the same directory called testing.
 \\[5pt]
-We also tested the code style using the \textbf{Flake8} \cite{flake} library, which checks your code base against the PEP8 coding
+We also tested the code style using the \textbf{Flake8} \cite{flake} library, which checks your code base against the \textbf{PEP8} \cite{pep} coding
 style.
 \subsection{Manual testing}
 Some of the units were dependent on user behavior so we manually tested them. In addition, we tested the 
